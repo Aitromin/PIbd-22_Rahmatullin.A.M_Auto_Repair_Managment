@@ -80,8 +80,22 @@ public partial class SparePartListForm : Form
             MessageBoxIcon.Question);
         if (answer == DialogResult.Yes)
         {
-            sparePartRepository.Delete(sparePart.Id);
-            LoadSpareParts();
+            DeleteSparePart(sparePart);
         }
+    }
+
+    private void DeleteSparePart(SparePart sparePart)
+    {
+        try
+        {
+            sparePartRepository.Delete(sparePart.Id);
+        }
+        catch (InvalidOperationException exception)
+        {
+            MessageBox.Show(exception.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            return;
+        }
+
+        LoadSpareParts();
     }
 }

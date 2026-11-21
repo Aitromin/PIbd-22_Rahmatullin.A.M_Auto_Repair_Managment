@@ -1,9 +1,18 @@
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace Auto_Repair_Managment.Entity;
 
+[Table("client")]
 public sealed class Client : EntityBase
 {
+    [Required]
+    [Column("full_name")]
     public string FullName { get; private set; }
 
+    [Required]
+    [MaxLength(20)]
+    [Column("phone_number")]
     public string PhoneNumber { get; private set; }
 
     private Client(string fullName, string phoneNumber)

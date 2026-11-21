@@ -81,8 +81,22 @@ public partial class MechanicListForm : Form
             MessageBoxIcon.Question);
         if (answer == DialogResult.Yes)
         {
-            mechanicRepository.Delete(mechanic.Id);
-            LoadMechanics();
+            DeleteMechanic(mechanic);
         }
+    }
+
+    private void DeleteMechanic(Mechanic mechanic)
+    {
+        try
+        {
+            mechanicRepository.Delete(mechanic.Id);
+        }
+        catch (InvalidOperationException exception)
+        {
+            MessageBox.Show(exception.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            return;
+        }
+
+        LoadMechanics();
     }
 }
