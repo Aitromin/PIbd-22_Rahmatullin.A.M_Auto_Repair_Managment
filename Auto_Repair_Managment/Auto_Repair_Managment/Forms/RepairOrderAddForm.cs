@@ -8,7 +8,6 @@ public partial class RepairOrderAddForm : Form
 {
     private const string UnknownClientText = "Неизвестный клиент";
 
-    private readonly IRepairOrderRepository repairOrderRepository;
     private readonly IAppointmentRepository appointmentRepository;
     private readonly IClientRepository clientRepository;
     private readonly IWorkTypeRepository workTypeRepository;
@@ -17,21 +16,18 @@ public partial class RepairOrderAddForm : Form
     private readonly Dictionary<SparePart, int> usedParts = new();
 
     public RepairOrderAddForm(
-        IRepairOrderRepository repairOrderRepository,
         IAppointmentRepository appointmentRepository,
         IClientRepository clientRepository,
         IWorkTypeRepository workTypeRepository,
         ISparePartRepository sparePartRepository,
         ISparePartUsageRepository sparePartUsageRepository)
     {
-        ArgumentNullException.ThrowIfNull(repairOrderRepository);
         ArgumentNullException.ThrowIfNull(appointmentRepository);
         ArgumentNullException.ThrowIfNull(clientRepository);
         ArgumentNullException.ThrowIfNull(workTypeRepository);
         ArgumentNullException.ThrowIfNull(sparePartRepository);
         ArgumentNullException.ThrowIfNull(sparePartUsageRepository);
         InitializeComponent();
-        this.repairOrderRepository = repairOrderRepository;
         this.appointmentRepository = appointmentRepository;
         this.clientRepository = clientRepository;
         this.workTypeRepository = workTypeRepository;
@@ -127,13 +123,7 @@ public partial class RepairOrderAddForm : Form
             completedAtDateTimePicker.Value.Date,
             CalculateTotalCost());
 
-        repairOrderRepository.Add(repairOrder);
-        foreach ((SparePart sparePart, int quantity) in usedParts)
-        {
-            sparePart.WriteOff(quantity);
-            sparePartRepository.Update(sparePart);
-            sparePartUsageRepository.Add(SparePartUsage.Create(repairOrder.Id, sparePart.Id, quantity));
-        }
+        sparePartUsageRepository.AddRepairOrderWithParts(repairOrder, usedParts);
     }
 
     private void WorkTypeComboBox_SelectedIndexChanged(object? sender, EventArgs e)
@@ -184,7 +174,7 @@ public partial class RepairOrderAddForm : Form
         {
             SaveRepairOrder();
         }
-        catch (ArgumentException exception)
+        catch (Exception exception) when (exception is ArgumentException or InvalidOperationException)
         {
             MessageBox.Show(exception.Message, "Ошибка ввода", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             return;

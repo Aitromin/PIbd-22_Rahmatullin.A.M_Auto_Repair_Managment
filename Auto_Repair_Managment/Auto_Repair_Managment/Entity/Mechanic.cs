@@ -1,17 +1,25 @@
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using Auto_Repair_Managment.Enums;
 
 namespace Auto_Repair_Managment.Entity;
 
+[Table("mechanic")]
 public sealed class Mechanic : EntityBase
 {
     private const int MaxExperienceYears = 60;
 
+    [Required]
+    [Column("full_name")]
     public string FullName { get; private set; }
 
+    [Column("qualification")]
     public QualificationLevel Qualification { get; private set; }
 
+    [Column("specialization")]
     public MechanicSpecialization Specialization { get; private set; }
 
+    [Column("experience_years")]
     public int ExperienceYears { get; private set; }
 
     private Mechanic(

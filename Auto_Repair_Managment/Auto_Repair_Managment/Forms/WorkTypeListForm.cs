@@ -79,8 +79,22 @@ public partial class WorkTypeListForm : Form
             MessageBoxIcon.Question);
         if (answer == DialogResult.Yes)
         {
-            workTypeRepository.Delete(workType.Id);
-            LoadWorkTypes();
+            DeleteWorkType(workType);
         }
+    }
+
+    private void DeleteWorkType(WorkType workType)
+    {
+        try
+        {
+            workTypeRepository.Delete(workType.Id);
+        }
+        catch (InvalidOperationException exception)
+        {
+            MessageBox.Show(exception.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            return;
+        }
+
+        LoadWorkTypes();
     }
 }

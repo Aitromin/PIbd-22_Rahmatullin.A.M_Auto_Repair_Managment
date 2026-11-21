@@ -1,13 +1,24 @@
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace Auto_Repair_Managment.Entity;
 
+[Table("spare_part")]
 public sealed class SparePart : EntityBase
 {
+    [Required]
+    [MaxLength(50)]
+    [Column("article")]
     public string Article { get; private set; }
 
+    [Required]
+    [Column("name")]
     public string Name { get; private set; }
 
+    [Column("price", TypeName = "numeric(19,2)")]
     public decimal Price { get; private set; }
 
+    [Column("in_stock")]
     public int QuantityInStock { get; private set; }
 
     private SparePart(string article, string name, decimal price, int quantityInStock)

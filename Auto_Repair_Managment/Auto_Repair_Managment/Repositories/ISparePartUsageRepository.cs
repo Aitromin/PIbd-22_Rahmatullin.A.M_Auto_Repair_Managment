@@ -6,5 +6,5 @@ public interface ISparePartUsageRepository
 {
     IReadOnlyList<SparePartUsage> GetByRepairOrderId(int repairOrderId);
 
-    void Add(SparePartUsage sparePartUsage);
+    void AddRepairOrderWithParts(RepairOrder repairOrder, IReadOnlyDictionary<SparePart, int> usedParts);
 }
